@@ -1,0 +1,93 @@
+import { spawn } from "child_process";
+import path from "path";
+import fs from "fs";
+import { PluginInfo } from "./plugin-loader.js";
+import { loadConfig } from "./config-manager.js";
+
+export interface ExecutionResult {
+  success: boolean;
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+}
+
+export async function executePlugin(
+  pluginInfo: PluginInfo,
+  paramsJson?: string
+): Promise<ExecutionResult> {
+  const config = loadConfig();
+
+  if (!config.pythonInterpreter) {
+    return {
+      success: false,
+      stdout: "",
+      stderr: "Python interpreter not configured. Run: zccr config --set-python-interpreter <path>",
+      exitCode: null,
+    };
+  }
+
+  const pluginDir = pluginInfo.path;
+  const pluginId = pluginInfo.id;
+
+  // Check for main.py first
+  const mainPyPath = path.join(pluginDir, "main.py");
+  // Then check for scripts/<id>.py
+  const scriptPath = path.join(pluginDir, "scripts", `${pluginId}.py`);
+
+  let scriptToRun: string | null = null;
+
+  if (fs.existsSync(mainPyPath)) {
+    scriptToRun = mainPyPath;
+  } else if (fs.existsSync(scriptPath)) {
+    scriptToRun = scriptPath;
+  }
+
+  if (!scriptToRun) {
+    return {
+      success: false,
+      stdout: "",
+      stderr: `No script found for plugin '${pluginId}'. Tried:\n  - ${mainPyPath}\n  - ${scriptPath}`,
+      exitCode: null,
+    };
+  }
+
+  return new Promise((resolve) => {
+    const args = [scriptToRun!];
+    if (paramsJson) {
+      args.push(paramsJson);
+    }
+
+    const proc = spawn(config.pythonInterpreter, args, {
+      cwd: pluginDir,
+    });
+
+    let stdout = "";
+    let stderr = "";
+
+    proc.stdout?.on("data", (data) => {
+      stdout += data.toString();
+    });
+
+    proc.stderr?.on("data", (data) => {
+      stderr += data.toString();
+    });
+
+    proc.on("close", (code) => {
+      resolve({
+        success: code === 0,
+        stdout,
+        stderr,
+        exitCode: code,
+      });
+    });
+
+    proc.on("error", (err) => {
+      resolve({
+        success: false,
+        stdout: "",
+        stderr: err.message,
+        exitCode: null,
+      });
+    });
+  });
+}

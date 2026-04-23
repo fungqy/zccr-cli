@@ -1,0 +1,14 @@
+# IDE
+.claude
+.idea
+.vscode
+.zed
+
+# Build output
+dist
+
+# Dependencies
+node_modules
+
+# Process documentation
+docs
