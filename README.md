@@ -1,6 +1,6 @@
 # zccr 命令行工具
 
-这是一个用于控制 Zoomlion 机器人的命令行工具。
+这是一个用于控制机器人的命令行工具
 
 ## 系统要求
 
@@ -22,7 +22,9 @@ node --version
 ### 2. 安装 zccr 命令行工具
 
 ```bash
-npm install -g /path/to/zccr-cli
+git clone https://github.com/fungqy/zccr-cli.git
+cd zccr-cli
+npm install -g .
 ```
 
 ### 3. 配置 Python 解释器路径
@@ -139,7 +141,8 @@ A: 确保插件目录中存在 `main.py` 或 `scripts/<插件id>.py` 文件。
 
 A: 修改源代码后，在项目目录下执行以下命令：
 ```bash
-npm run build && npm install -g /path/to/zccr-cli
+cd zccr-cli
+npm run build && npm install -g .
 ```
 
 ### Q: 如何查看当前配置？
