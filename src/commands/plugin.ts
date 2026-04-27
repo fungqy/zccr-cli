@@ -62,6 +62,30 @@ export function createPluginCommands(): Command[] {
     return commands;
 }
 
+export function createListPluginsCommand(): Command {
+    const cmd = new Command("list-plugins");
+    cmd.description("List all available plugins");
+
+    cmd.action(() => {
+        const plugins = loadPlugins();
+        if (plugins.length === 0) {
+            console.log("No plugins found.");
+            return;
+        }
+
+        console.log("Available plugins:\n");
+        for (const pluginInfo of plugins) {
+            const plugin = pluginInfo.plugin;
+            const name = plugin.name || pluginInfo.id;
+            const desc = getPluginDescription(plugin);
+            console.log(`  ${name}`);
+            console.log(`    ${desc}\n`);
+        }
+    });
+
+    return cmd;
+}
+
 function getPluginDescription(
     plugin: ReturnType<typeof yaml.load>,
 ): string {

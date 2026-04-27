@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { createConfigCommand } from "./commands/config.js";
-import { createPluginCommands } from "./commands/plugin.js";
+import { createPluginCommands, createListPluginsCommand } from "./commands/plugin.js";
 
 const program = new Command();
 
@@ -14,6 +14,7 @@ program
     .version("1.0.0");
 
 program.addCommand(createConfigCommand());
+program.addCommand(createListPluginsCommand());
 
 const pluginCommands = createPluginCommands();
 for (const cmd of pluginCommands) {
