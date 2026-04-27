@@ -27,26 +27,24 @@ export async function executePlugin(
   }
 
   const pluginDir = pluginInfo.path;
-  const pluginId = pluginInfo.id;
+  const entryPath = pluginInfo.plugin.execution?.entry;
 
-  // Check for main.py first
-  const mainPyPath = path.join(pluginDir, "main.py");
-  // Then check for scripts/<id>.py
-  const scriptPath = path.join(pluginDir, "scripts", `${pluginId}.py`);
-
-  let scriptToRun: string | null = null;
-
-  if (fs.existsSync(mainPyPath)) {
-    scriptToRun = mainPyPath;
-  } else if (fs.existsSync(scriptPath)) {
-    scriptToRun = scriptPath;
-  }
-
-  if (!scriptToRun) {
+  if (!entryPath) {
     return {
       success: false,
       stdout: "",
-      stderr: `No script found for plugin '${pluginId}'. Tried:\n  - ${mainPyPath}\n  - ${scriptPath}`,
+      stderr: `No entry point configured for plugin '${pluginInfo.id}'`,
+      exitCode: null,
+    };
+  }
+
+  const scriptToRun = path.join(pluginDir, entryPath);
+
+  if (!fs.existsSync(scriptToRun)) {
+    return {
+      success: false,
+      stdout: "",
+      stderr: `Script not found: ${scriptToRun}`,
       exitCode: null,
     };
   }

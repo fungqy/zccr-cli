@@ -97,11 +97,12 @@ function printPluginInfo(
     pluginInfo: ReturnType<typeof loadPlugins>[number],
 ): void {
     const plugin = pluginInfo.plugin;
-    console.log(`Plugin: ${plugin.name} (${plugin.id})`);
+    console.log(`Plugin: ${plugin.name}`);
+    console.log(`ID: ${plugin.id}`);
     console.log(`Version: ${plugin.version}`);
     console.log(`Description:\n${plugin.description}`);
-    if (plugin.tags && plugin.tags.length > 0) {
-        console.log(`Tags: ${plugin.tags.join(", ")}`);
+    if (plugin.category) {
+        console.log(`Category: ${plugin.category}`);
     }
 }
 
@@ -127,11 +128,11 @@ function printPluginReturn(
     pluginInfo: ReturnType<typeof loadPlugins>[number],
 ): void {
     const plugin = pluginInfo.plugin;
-    if (plugin.returns) {
+    if (plugin.returns && plugin.returns.properties) {
         console.log("Returns:");
-        const returnsYaml = yaml.dump(plugin.returns).trimStart();
-        for (const line of returnsYaml.split("\n")) {
-            console.log(`  ${line}`);
+        for (const [name, prop] of Object.entries(plugin.returns.properties)) {
+            console.log(`  ${name}:`);
+            console.log(formatProperty(prop as ParameterProperty, "    "));
         }
     }
 }

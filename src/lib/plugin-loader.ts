@@ -45,9 +45,9 @@ export function loadPlugins(): PluginInfo[] {
         const content = fs.readFileSync(pluginYamlPath, "utf-8");
         const plugin = yaml.load(content) as Plugin;
 
-        if (plugin.id) {
+        if (plugin.name) {
           plugins.push({
-            id: plugin.id,
+            id: plugin.name,
             path: pluginDir,
             plugin,
           });
