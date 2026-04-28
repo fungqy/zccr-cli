@@ -9,6 +9,7 @@ const CONFIG_FILE = "config.json";
 interface Config {
   pluginPath: string;
   pythonInterpreter: string;
+  rcpApiKey: string;
 }
 
 function getConfigPath(): string {
@@ -30,6 +31,7 @@ export function loadConfig(): Config {
     return {
       pluginPath: getDefaultPluginPath(),
       pythonInterpreter: "",
+      rcpApiKey: "",
     };
   }
 
@@ -40,11 +42,13 @@ export function loadConfig(): Config {
     return {
       pluginPath: config.pluginPath || getDefaultPluginPath(),
       pythonInterpreter: config.pythonInterpreter || "",
+      rcpApiKey: config.rcpApiKey || "",
     };
   } catch {
     return {
       pluginPath: getDefaultPluginPath(),
       pythonInterpreter: "",
+      rcpApiKey: "",
     };
   }
 }
@@ -102,4 +106,10 @@ export function setPythonInterpreter(pythonInterpreter: string): void {
       reject(new Error(`Failed to execute Python interpreter: ${err.message}`));
     });
   }) as unknown as void;
+}
+
+export function setRcpApiKey(apiKey: string): void {
+  const config = loadConfig();
+  config.rcpApiKey = apiKey;
+  saveConfig(config);
 }
