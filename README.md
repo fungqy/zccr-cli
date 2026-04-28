@@ -35,9 +35,7 @@ npm install -g .
 zccr config --set-python-interpreter /path/to/python_interpreter
 ```
 
-### 4. 配置插件目录（可选）
-
-默认情况下，插件目录为 `~/zccr_plugins`。如果你有其他插件目录，可以设置：
+### 4. 配置插件目录
 
 ```bash
 zccr config --set-plugin-path /你的插件目录路径
@@ -50,6 +48,16 @@ zccr config --set-plugin-path /你的插件目录路径
 ```bash
 zccr config
 ```
+
+### 配置选项
+
+`config` 命令支持以下选项：
+
+| 选项 | 说明 |
+|------|------|
+| `--set-plugin-path <path>` | 设置插件目录路径 |
+| `--set-python-interpreter <path>` | 设置 Python 解释器绝对路径 |
+| `--set-rcp-apikey <apiKey>` | 设置 RCP API key（用于机器人 API） |
 
 ### 查看帮助信息
 
@@ -106,6 +114,26 @@ zccr nav.move_to --detail
 zccr nav.move_to --run '{"x": 1, "y": 2}'
 ```
 
+### 列出所有插件
+
+```bash
+zccr list-plugins
+```
+
+该命令会显示插件目录中所有可用的插件及其描述。
+
+### 列出所有机器人
+
+```bash
+zccr list-robots
+```
+
+该命令会从 RCP 服务获取并显示所有机器人状态。使用此命令前需要先配置 RCP API key：
+
+```bash
+zccr config --set-rcp-apikey <your_api_key>
+```
+
 ## 插件目录结构
 
 插件必须放在你配置的插件目录下，每个插件是一个单独的文件夹，文件夹中必须包含 `plugin.yaml` 文件。
@@ -131,6 +159,13 @@ zccr nav.move_to --run '{"x": 1, "y": 2}'
 A: 需要先配置 Python 解释器：
 ```bash
 zccr config --set-python-interpreter /path/to/python_interpreter
+```
+
+### Q: 运行 list-robots 时报错 "RCP API key not set"
+
+A: 需要先配置 RCP API key：
+```bash
+zccr config --set-rcp-apikey <apiKey>
 ```
 
 ### Q: 运行插件时报错 "No script found"
