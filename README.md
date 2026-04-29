@@ -57,7 +57,6 @@ zccr config
 |------|------|
 | `--set-plugin-path <path>` | 设置插件目录路径 |
 | `--set-python-interpreter <path>` | 设置 Python 解释器绝对路径 |
-| `--set-rcp-apikey <apiKey>` | 设置 RCP API key（用于机器人 API） |
 
 ### 查看帮助信息
 
@@ -128,11 +127,7 @@ zccr list-plugins
 zccr list-robots
 ```
 
-该命令会从 RCP 服务获取并显示所有机器人状态。使用此命令前需要先配置 RCP API key：
-
-```bash
-zccr config --set-rcp-apikey <your_api_key>
-```
+该命令会通过执行 Python 脚本从 RCP 服务获取并显示所有机器人状态。
 
 ## 插件目录结构
 
@@ -159,13 +154,6 @@ zccr config --set-rcp-apikey <your_api_key>
 A: 需要先配置 Python 解释器：
 ```bash
 zccr config --set-python-interpreter /path/to/python_interpreter
-```
-
-### Q: 运行 list-robots 时报错 "RCP API key not set"
-
-A: 需要先配置 RCP API key：
-```bash
-zccr config --set-rcp-apikey <apiKey>
 ```
 
 ### Q: 运行插件时报错 "No script found"
