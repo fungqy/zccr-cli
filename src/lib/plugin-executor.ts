@@ -50,13 +50,9 @@ export async function executePlugin(
   }
 
   return new Promise((resolve) => {
-    const args = [scriptToRun!];
-    if (paramsJson) {
-      args.push(paramsJson);
-    }
-
-    const proc = spawn(config.pythonInterpreter, args, {
+    const proc = spawn(config.pythonInterpreter, [scriptToRun], {
       cwd: pluginDir,
+      stdio: ["pipe", "pipe", "pipe"],
     });
 
     let stdout = "";
@@ -87,5 +83,11 @@ export async function executePlugin(
         exitCode: null,
       });
     });
+
+    if (paramsJson) {
+      const request = JSON.stringify({ parameters: JSON.parse(paramsJson) });
+      proc.stdin?.write(request);
+    }
+    proc.stdin?.end();
   });
 }

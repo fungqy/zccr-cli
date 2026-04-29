@@ -19,22 +19,20 @@ export function createPluginCommands(): Command[] {
         cmd.option("--detail", "Show full plugin info (The full content of plugin.yaml)");
         cmd.option("--run [params]", "Execute the plugin with JSON parameters");
 
-        cmd.action((opts) => {
+        cmd.action(async (opts) => {
             if (opts.detail) {
                 console.log(yaml.dump(pluginInfo.plugin));
                 return;
             }
 
             if (opts.run !== undefined) {
-                runPlugin(pluginInfo, opts.run).then((result) => {
-                    if (!result.success) {
-                        console.error(result.stderr);
-                        process.exit(result.exitCode ?? 1);
-                    }
-                    console.log(result.stdout);
-                    process.exit(0);
-                });
-                return;
+                const result = await runPlugin(pluginInfo, opts.run);
+                if (!result.success) {
+                    console.error(result.stderr);
+                    process.exit(result.exitCode ?? 1);
+                }
+                console.log(result.stdout);
+                process.exit(0);
             }
 
             if (opts.info) {
